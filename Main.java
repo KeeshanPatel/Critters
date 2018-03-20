@@ -13,6 +13,7 @@ package assignment4;
  */
 
 
+import java.text.ParseException;
 import java.util.Scanner;
 import java.io.*;
 
@@ -69,11 +70,17 @@ public class Main {
         }
 
         boolean quit = false;
-
+/*
         try{
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 5; i++) {
             Critter.makeCritter("assignment4.Craig");
+            Critter.makeCritter("assignment4.MyCritter1");
+            Critter.makeCritter("assignment4.MyCritter7");
+            Critter.makeCritter("assignment4.MyCritter6");
+
+
         }
+
         for (int i = 0; i < 5; i++) {
             Critter.makeCritter("assignment4.Algae");
         }
@@ -81,24 +88,35 @@ public class Main {
         catch (Exception c) {
 
         }
-
+*/
 
 
         while(!quit){
            // System.out.println("type 'quit', 'show', 'step', 'make' , 'seed', 'stats'");
-            String input = kb.next();
-            if(input.compareTo("quit") == 0){
+            String input = kb.nextLine();
+            String[] splitInput = input.split("\\s+");
+            if(splitInput[0].compareTo("quit") == 0){
+                if(splitInput.length !=1){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 quit = true;
                 continue;
             }
-            if(input.compareTo("show")==0){
+            if(splitInput[0].compareTo("show")==0){
+                if(splitInput.length !=1){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 Critter.displayWorld();
             }
 
-            if(input.compareTo("step")==0){
-                input = kb.nextLine();
+            else if(splitInput[0].compareTo("step")==0){
+                if(splitInput.length !=1 && splitInput.length != 2){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 String count;
-                String[] splitInput = input.split("\\s+");
                 if(splitInput.length ==2) {
                     count = splitInput[1];
                 }
@@ -110,33 +128,51 @@ public class Main {
                     for (int i = 0; i < numberCount; i++) {
                         Critter.worldTimeStep();
                     }
-                } catch (Exception c) {
+                } catch (NumberFormatException c) {
+                    System.out.println("error processing: "+input);
                     continue;
                 }
             }
-            if(input.compareTo("seed")==0){
+            else if(splitInput[0].compareTo("seed")==0){
+                if(splitInput.length !=2){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 input = kb.next();
                 try {
                     int numberSeed = Integer.parseInt(input);
                     Critter.setSeed(numberSeed);
                 }
-                catch (Exception c){
+                catch (NumberFormatException c){
+                    System.out.println("error processing: "+input);
                     continue;
                 }
             }
-            if(input.compareTo("stats")==0){
+            else if(splitInput[0].compareTo("stats")==0){
+                if(splitInput.length !=1){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 input = kb.next();
                 try {
-                    String critterInputer = "assignment4." +input;
-                    Critter.runStats(Critter.getInstances(critterInputer));
+                    //String critterInputer = "assignment4." +input;
+                    Critter.runStats(Critter.getInstances(input));
                 }
-                catch (Exception c){
+                catch (NumberFormatException c){
+                    System.out.println("error processing: "+input);
+                    continue;
                 }
+                catch (InvalidCritterException e) {
+                    e.printStackTrace();
+                }
+
             }
-            if(input.compareTo("make")==0){
-                input = kb.nextLine();
+            else if(splitInput[0].compareTo("make")==0){
+                if(splitInput.length !=2 && splitInput.length != 3){
+                    System.out.println("error processing: "+input);
+                    continue;
+                }
                 String count;
-                String[] splitInput = input.split("\\s+");
                 if(splitInput.length ==3) {
                     count = splitInput[2];
                 }
@@ -146,12 +182,19 @@ public class Main {
                 try {
                     int numberCount = Integer.parseInt(count);
                     for (int i = 0; i < numberCount; i++) {
-                        String critterInputer = "assignment4." +splitInput[1];
-                        Critter.makeCritter(critterInputer);
+                       // String critterInputer = "assignment4." +splitInput[1];
+                        Critter.makeCritter(splitInput[1]);
                     }
-                } catch (Exception c) {
+                } catch (NumberFormatException c) {
+                    System.out.println("error processing: "+input);
                     continue;
                 }
+                catch (InvalidCritterException c) {
+                    System.out.println("error processing: "+input);
+                }
+            }
+            else{
+                System.out.println("error processing: "+input);
             }
 
 

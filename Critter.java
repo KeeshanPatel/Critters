@@ -159,7 +159,7 @@ public abstract class Critter
 		}
 		population.add(offspring);
 		babies.add(offspring);
-		System.out.println("Critter born");
+		//System.out.println("Critter born");
 
 	}
 
@@ -170,6 +170,7 @@ public abstract class Critter
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
 		try
 		{
+			critter_class_name = "assignment4." +critter_class_name;
 
 			Class c = Class.forName(critter_class_name);
 			Critter newCritter = (Critter) c.newInstance();
@@ -188,6 +189,7 @@ public abstract class Critter
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		try
 		{
+			critter_class_name = "assignment4." +critter_class_name;
 			Class c = Class.forName(critter_class_name);
 
 			for(Critter source: population)
@@ -206,28 +208,22 @@ public abstract class Critter
 	}
 
 	public static void runStats(List<Critter> critters) {
-		System.out.print(critters.size() + " critters as follows -- ");
-		Map<String, Integer> critter_count = new HashMap();
-		Iterator var3 = critters.iterator();
-
-		while(var3.hasNext()) {
-			Critter crit = (Critter)var3.next();
+		System.out.print("" + critters.size() + " critters as follows -- ");
+		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
+		for (Critter crit : critters) {
 			String crit_string = crit.toString();
-			Integer old_count = (Integer)critter_count.get(crit_string);
+			Integer old_count = critter_count.get(crit_string);
 			if (old_count == null) {
-				critter_count.put(crit_string, Integer.valueOf(1));
+				critter_count.put(crit_string,  1);
 			} else {
 				critter_count.put(crit_string, old_count.intValue() + 1);
 			}
 		}
-
 		String prefix = "";
-
-		for(Iterator var8 = critter_count.keySet().iterator(); var8.hasNext(); prefix = ", ") {
-			String s = (String)var8.next();
+		for (String s : critter_count.keySet()) {
 			System.out.print(prefix + s + ":" + critter_count.get(s));
+			prefix = ", ";
 		}
-
 		System.out.println();
 	}
 
@@ -238,6 +234,7 @@ public abstract class Critter
 	public static void worldTimeStep() {
 		for (Critter c : population) {
 			c.doTimeStep();
+			c.energy -=Params.rest_energy_cost;
 		}
 		checkDead();
 		for (int i = 0; i < population.size(); i++) {
@@ -255,7 +252,7 @@ public abstract class Critter
 					if (!firstWantFight) {
 						if (firstCritter.getEnergy() < 0) {
 							population.remove(firstCritter);
-							System.out.println("Critter rans away exhausted");
+							//System.out.println("Critter rans away exhausted");
 
 							continue;
 						}
@@ -277,7 +274,7 @@ public abstract class Critter
 					if (!secondWantFight) {
 						if (secondCritter.getEnergy() < 0) {
 							population.remove(secondCritter);
-							System.out.println("Critter rans away exhausted");
+							//System.out.println("Critter rans away exhausted");
 
 							continue;
 						}
@@ -292,7 +289,7 @@ public abstract class Critter
 							}
 						}
 					}
-
+					checkDead();
 					if(population.contains(firstCritter) && population.contains(secondCritter)&&((firstCritter.x_coord == secondCritter.x_coord) && (firstCritter.y_coord == secondCritter.y_coord))){
 						Critter winner;
 						Critter loser;
@@ -319,12 +316,12 @@ public abstract class Critter
 							winner = secondCritter;
 						}
 						winner.energy += (loser.energy/2);
-						System.out.println("Critter killed");
+						//System.out.println("Critter killed");
 
 						population.remove(loser);
 						if(loser == firstCritter){
-							j = population.size();
 							i--;
+							break;
 						}
 					}
 
@@ -370,13 +367,13 @@ public abstract class Critter
 	}
 
 	public static void checkDead(){
-		for(Critter c: population){
-			if(c.getEnergy() <0){
-				population.remove(c);
-				System.out.println("Critter exhausted");
+		for (Iterator<Critter> iterator = population.iterator(); iterator.hasNext();) {
+			Critter c = iterator.next();
+			if(c.getEnergy() <= 0){
+				iterator.remove();
+				//System.out.println("Critter exhausted");
 
 			}
-
 		}
 	}
 
