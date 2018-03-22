@@ -1,28 +1,26 @@
-package assignment4;
 /* CRITTERS Main.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Keeshan Patel
+ * kp484
+ * Shawn Victor
+ * sfv225
  * Slip days used: <0>
- * Fall 2016
+ * Spring 2018
  */
 
+package assignment4;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
+import java.util.List;
+import java.lang.reflect.*;
 
-
-/*
- * Usage: java <pkgname>.Main <input file> test
- * input file is optional.  If input file is specified, the word 'test' is optional.
- * May not use 'test' argument without specifying input file.
+/**
+ * This class is responsible for displaying all the data to the console and read the inputs from the console
+ *  Given the inputs this class will manipulate the Critters Data and update it to the console interface
  */
+
 public class Main {
 
     static Scanner kb;	// scanner connected to keyboard input, or input file
@@ -70,25 +68,8 @@ public class Main {
         }
 
         boolean quit = false;
-/*
-        try{
-        for (int i = 0; i < 5; i++) {
-            Critter.makeCritter("assignment4.Craig");
-            Critter.makeCritter("assignment4.MyCritter1");
-            Critter.makeCritter("assignment4.MyCritter7");
-            Critter.makeCritter("assignment4.MyCritter6");
 
 
-        }
-
-        for (int i = 0; i < 5; i++) {
-            Critter.makeCritter("assignment4.Algae");
-        }
-        }
-        catch (Exception c) {
-
-        }
-*/
 
 
         while(!quit){
@@ -138,7 +119,7 @@ public class Main {
                     System.out.println("error processing: "+input);
                     continue;
                 }
-                input = kb.next();
+                input = splitInput[1];
                 try {
                     int numberSeed = Integer.parseInt(input);
                     Critter.setSeed(numberSeed);
@@ -149,21 +130,43 @@ public class Main {
                 }
             }
             else if(splitInput[0].compareTo("stats")==0){
-                if(splitInput.length !=1){
+                if(splitInput.length !=2){
                     System.out.println("error processing: "+input);
                     continue;
                 }
-                input = kb.next();
+                input = splitInput[1];
                 try {
-                    //String critterInputer = "assignment4." +input;
-                    Critter.runStats(Critter.getInstances(input));
+                    List<Critter> instances= Critter.getInstances(splitInput[1]);
+                    String nameOfFunction = "runStats";
+                    String critter_class_name = "assignment4." + splitInput[1];
+                    Class myClass = Class.forName(critter_class_name);
+                    try {
+                        Method method = myClass.getMethod(nameOfFunction,List.class);
+                        try {
+                            method.invoke(null,instances);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 catch (NumberFormatException c){
                     System.out.println("error processing: "+input);
                     continue;
                 }
                 catch (InvalidCritterException e) {
-                    e.printStackTrace();
+                    System.out.println("error processing: "+input);
+
+                }
+                catch (ClassNotFoundException e) {
+                    System.out.println("error processing: "+input);
+                }
+                catch (NoClassDefFoundError e) {
+                    System.out.println("error processing: "+input);
                 }
 
             }

@@ -1,6 +1,5 @@
 package assignment4;
 
-
 public class InvalidCritterException extends Exception {
 	String offending_class;
 	
